@@ -1,7 +1,11 @@
 const Book = require("../models/Book");
+const bookSchema = require("../validations/bookValidation");
 
 // Add Book
 const createBook = async (req, res) => {
+    const { error } = bookSchema.validate(req.body);
+    if (error) return res.status(400).json({ message: error.details[0].message });
+
     try {
         const book = await Book.create(req.body);
         res.status(201).json(book);
@@ -9,6 +13,7 @@ const createBook = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
+
 
 // Get All Books
 const getBooks = async (req, res) => {
